@@ -1,18 +1,32 @@
-from typing import List
-from fastapi import APIRouter, Depends, HTTPException
+from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session
 from app.core.database import get_session
 from app.api.deps import require_admin
-from app.schemas.product import ProductCreate, ProductUpdate, ProductRead
+from app.schemas.product import ProductCreate, ProductUpdate, ProductRead, SearchResults
 from app.crud import product as product_crud
+from app.services.search import search_products
 
 router = APIRouter(prefix="/products", tags=["products"])
 
 
 @router.get("/", response_model=List[ProductRead])
 def list_products(skip: int = 0, limit: int = 50, session: Session = Depends(get_session)):
-    # Public — anyone can browse the catalog
     return product_crud.list_products(session, skip=skip, limit=limit)
+
+
+@router.get("/search", response_model=SearchResults)
+def search(
+    q: str = Query(default=""),
+    category_id: Optional[int] = Query(default=None),
+    skip: int = 0,
+    limit: int = 20,
+    session: Session = Depends(get_session),
+):
+    products, total = search_products(
+        session, query=q, category_id=category_id, skip=skip, limit=limit,
+    )
+    return SearchResults(items=products, total=total)
 
 
 @router.get("/{product_id}", response_model=ProductRead)
@@ -27,7 +41,7 @@ def get_product(product_id: int, session: Session = Depends(get_session)):
 def create_product(
     data: ProductCreate,
     session: Session = Depends(get_session),
-    _admin=Depends(require_admin),  # admin-only — this is the write path
+    _admin=Depends(require_admin),
 ):
     return product_crud.create_product(session, data)
 
@@ -51,7 +65,6 @@ def delete_product(
     session: Session = Depends(get_session),
     _admin=Depends(require_admin),
 ):
-    # Soft delete — sets is_active=False, never removes the row
     ok = product_crud.soft_delete_product(session, product_id)
     if not ok:
         raise HTTPException(status_code=404, detail="Product not found")

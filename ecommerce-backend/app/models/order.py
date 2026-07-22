@@ -37,7 +37,7 @@ class OrderItem(SQLModel, table=True):
     product_id: Optional[int] = None
     variant_id: Optional[int] = None
 
-    # Snapshot fields — immutable after creation, survive product changes
+    # Snapshot fields — set at purchase time, survive product changes
     product_name: str
     product_slug: str = ""
     product_image_url: str = ""

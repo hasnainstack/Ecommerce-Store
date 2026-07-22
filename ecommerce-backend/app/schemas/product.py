@@ -27,6 +27,43 @@ class ProductRead(BaseModel):
     base_price: float
     is_active: bool
     category_id: Optional[int]
+    category: Optional["CategoryRead"] = None
+    variants: list["VariantRead"] = []
+    images: list["ImageRead"] = []
 
     class Config:
         from_attributes = True
+
+
+class CategoryRead(BaseModel):
+    id: int
+    name: str
+    slug: str
+
+    class Config:
+        from_attributes = True
+
+
+class VariantRead(BaseModel):
+    id: int
+    sku: str
+    price_override: Optional[float] = None
+    stock_qty: int
+    attributes: str = "{}"
+
+    class Config:
+        from_attributes = True
+
+
+class ImageRead(BaseModel):
+    id: int
+    url: str
+    position: int = 0
+
+    class Config:
+        from_attributes = True
+
+
+class SearchResults(BaseModel):
+    items: list[ProductRead]
+    total: int
