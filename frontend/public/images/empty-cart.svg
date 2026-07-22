@@ -1,0 +1,17 @@
+<svg viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="120" cy="90" r="70" stroke="#2563EB" stroke-width="2.5" opacity="0.12"/>
+  <circle cx="120" cy="90" r="50" stroke="#2563EB" stroke-width="2" opacity="0.08"/>
+  <!-- Shopping bag icon -->
+  <path d="M90 60H150L155 75H85L90 60Z" fill="#2563EB" opacity="0.12"/>
+  <rect x="80" y="70" width="80" height="70" rx="8" fill="#2563EB" opacity="0.08"/>
+  <path d="M100 70V95M140 70V95" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" opacity="0.15" fill="none"/>
+  <!-- Handles -->
+  <path d="M105 60C105 45 135 45 135 60" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.12"/>
+  <!-- Heart -->
+  <path d="M60 120C60 110 70 105 75 112C80 105 90 110 90 120C90 132 75 140 75 140C75 140 60 132 60 120Z" fill="#2563EB" opacity="0.08" stroke="#2563EB" stroke-width="1.5" opacity-stroke="0.12"/>
+  <!-- Tag -->
+  <path d="M160 115L175 100L180 105L165 120Z" fill="#2563EB" opacity="0.08" stroke="#2563EB" stroke-width="1.5" opacity-stroke="0.1"/>
+  <!-- Stars -->
+  <path d="M185 60L187 65L192 66L187 67L185 72L183 67L178 66L183 65Z" fill="#2563EB" opacity="0.12"/>
+  <path d="M55 60L56 63L59 64L56 65L55 68L54 65L51 64L54 63Z" fill="#2563EB" opacity="0.1"/>
+</svg>

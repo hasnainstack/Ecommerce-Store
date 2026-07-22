@@ -1,0 +1,22 @@
+<svg viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="120" cy="90" r="70" stroke="#2563EB" stroke-width="2.5" opacity="0.12"/>
+  <circle cx="120" cy="90" r="50" stroke="#2563EB" stroke-width="2" opacity="0.08"/>
+  <!-- Box -->
+  <rect x="90" y="70" width="60" height="55" rx="6" fill="#2563EB" opacity="0.06"/>
+  <rect x="95" y="75" width="50" height="45" rx="4" fill="#2563EB" opacity="0.08"/>
+  <!-- Lid -->
+  <rect x="85" y="60" width="70" height="14" rx="4" fill="#2563EB" opacity="0.1"/>
+  <!-- Tape -->
+  <rect x="115" y="60" width="10" height="65" rx="2" fill="#2563EB" opacity="0.06"/>
+  <!-- Checkmark -->
+  <path d="M115 100L122 107L132 95" stroke="#2563EB" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.2"/>
+  <!-- Clock -->
+  <circle cx="170" cy="55" r="15" stroke="#2563EB" stroke-width="2" fill="none" opacity="0.1"/>
+  <line x1="170" y1="55" x2="170" y2="48" stroke="#2563EB" stroke-width="2" stroke-linecap="round" opacity="0.12"/>
+  <line x1="170" y1="55" x2="176" y2="55" stroke="#2563EB" stroke-width="2" stroke-linecap="round" opacity="0.12"/>
+  <!-- Truck -->
+  <rect x="50" y="100" width="35" height="20" rx="3" fill="#2563EB" opacity="0.08"/>
+  <circle cx="58" cy="122" r="5" stroke="#2563EB" stroke-width="2" fill="none" opacity="0.1"/>
+  <circle cx="75" cy="122" r="5" stroke="#2563EB" stroke-width="2" fill="none" opacity="0.1"/>
+  <path d="M85 105H95L100 112V120H85" stroke="#2563EB" stroke-width="2" fill="none" opacity="0.1"/>
+</svg>

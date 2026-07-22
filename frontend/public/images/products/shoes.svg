@@ -1,0 +1,25 @@
+<svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="url(#grad)"/>
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="400" y2="400">
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="100%" stop-color="#FDE68A"/>
+    </linearGradient>
+  </defs>
+  <!-- Shoe Body -->
+  <path d="M100 250C100 230 120 200 160 180C200 160 260 140 290 150C320 160 330 180 330 200V250C330 260 320 270 300 270H130C110 270 100 260 100 250Z" fill="#2563EB" opacity="0.12"/>
+  <path d="M110 245C110 228 128 205 162 188C196 171 252 152 282 160C312 168 320 185 320 200V245C320 255 312 260 295 260H135C118 260 110 255 110 245Z" stroke="#2563EB" stroke-width="3" fill="none" opacity="0.3"/>
+  <!-- Sole -->
+  <path d="M110 258H320" stroke="#2563EB" stroke-width="5" stroke-linecap="round" opacity="0.25"/>
+  <path d="M115 265H310" stroke="#2563EB" stroke-width="4" stroke-linecap="round" opacity="0.15"/>
+  <!-- Laces -->
+  <path d="M200 165C210 175 220 165 230 175C240 185 250 175 260 185" stroke="#2563EB" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.4"/>
+  <path d="M195 175C205 185 215 175 225 185C235 195 245 185 255 195" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.3"/>
+  <!-- Swoosh -->
+  <path d="M140 220C180 190 240 180 290 200" stroke="#2563EB" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.35"/>
+  <!-- Heel detail -->
+  <rect x="115" y="230" width="20" height="25" rx="4" fill="#2563EB" opacity="0.15"/>
+  <!-- Motion lines -->
+  <path d="M60 210L80 215L70 205" stroke="#2563EB" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.3"/>
+  <path d="M55 225L75 228" stroke="#2563EB" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.2"/>
+</svg>

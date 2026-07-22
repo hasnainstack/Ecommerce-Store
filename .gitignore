@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+.virtual_documents/
+.venv/
+env/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.python-version
+
+# Build outputs
+.next/
+dist/
+build/
+*.egg
+
+# Environment
+.env
+.env.local
+.env*.local
+*.pem
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Database
+*.db
+*.sqlite3
+
+# Next.js
+out/
+.next/static/trace
+*.tsbuildinfo
+next-env.d.ts
+
+# Stripe (local webhook forwarding)
+stripe/

@@ -1,0 +1,17 @@
+<svg viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="120" cy="90" r="70" stroke="#2563EB" stroke-width="2.5" opacity="0.12"/>
+  <circle cx="120" cy="90" r="50" stroke="#2563EB" stroke-width="2" opacity="0.08"/>
+  <!-- Heart outline -->
+  <path d="M120 55C120 45 130 40 135 47C140 40 150 45 150 55C150 67 135 75 135 75C135 75 120 67 120 55Z" fill="#2563EB" opacity="0.06" stroke="#2563EB" stroke-width="2.5" opacity-stroke="0.15"/>
+  <!-- Heart filled -->
+  <path d="M120 55C120 45 130 40 135 47C140 40 150 45 150 55C150 63 138 71 135 73C132 71 120 63 120 55Z" fill="#2563EB" opacity="0.08"/>
+  <!-- Plus -->
+  <line x1="145" y1="100" x2="165" y2="100" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" opacity="0.12"/>
+  <line x1="155" y1="90" x2="155" y2="110" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" opacity="0.12"/>
+  <!-- Sparkles -->
+  <path d="M85 85L87 90L92 91L87 92L85 97L83 92L78 91L83 90Z" fill="#2563EB" opacity="0.1"/>
+  <path d="M170 60L171 63L174 64L171 65L170 68L169 65L166 64L169 63Z" fill="#2563EB" opacity="0.08"/>
+  <!-- Circle decorations -->
+  <circle cx="80" cy="110" r="3" fill="#2563EB" opacity="0.06"/>
+  <circle cx="170" cy="130" r="2" fill="#2563EB" opacity="0.06"/>
+</svg>
