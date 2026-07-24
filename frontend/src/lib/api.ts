@@ -1,5 +1,18 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+// Helper: get auth token from local storage
+function getAuthToken(): string | null {
+  if (typeof window === "undefined") return null;
+  const stored = localStorage.getItem("auth-storage");
+  if (!stored) return null;
+  try {
+    const { state } = JSON.parse(stored);
+    return state.accessToken ?? null;
+  } catch {
+    return null;
+  }
+}
+
 class ApiError extends Error {
   status: number;
   constructor(message: string, status: number) {
@@ -74,4 +87,45 @@ export const api = {
   patch: <T>(path: string, body: unknown) =>
     request<T>(path, { method: "PATCH", body: JSON.stringify(body) }),
   delete: <T>(path: string) => request<T>(path, { method: "DELETE" }),
+
+  /** Upload one or more files to a product's images. */
+  uploadImages: async <T>(productId: number, files: FileList | File[]): Promise<T> => {
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append("files", file);
+    }
+    const token = getAuthToken();
+    const headers: Record<string, string> = {};
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+    // Don't set Content-Type — fetch will set multipart boundary automatically
+
+    const res = await fetch(`${API_BASE}/products/${productId}/images`, {
+      method: "POST",
+      headers,
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.detail || "Failed to upload images");
+    }
+    return res.json();
+  },
+
+  /** Delete a product image. */
+  deleteImage: async (productId: number, imageId: number): Promise<void> => {
+    const token = getAuthToken();
+    const headers: Record<string, string> = {};
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+
+    const res = await fetch(`${API_BASE}/products/${productId}/images/${imageId}`, {
+      method: "DELETE",
+      headers,
+    });
+
+    if (!res.ok && res.status !== 204) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.detail || "Failed to delete image");
+    }
+  },
 };

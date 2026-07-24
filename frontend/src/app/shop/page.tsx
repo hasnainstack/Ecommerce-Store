@@ -1,35 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { DecorativeBackground } from "@/components/ui/DecorativeBackground";
 import { Button } from "@/components/ui";
-import { Search, SlidersHorizontal, X, Sparkles } from "lucide-react";
+import { Search, SlidersHorizontal, X, Sparkles, Loader2 } from "lucide-react";
 import Image from "next/image";
+import { api } from "@/lib/api";
 
-const SAMPLE_PRODUCTS = [
-  { id: 1, name: "Wireless Headphones Pro", slug: "wireless-headphones-pro", base_price: 149.99, category_id: 1, is_active: true, images: [], variants: [{ id: 1, price_override: null, stock_qty: 25 }] },
-  { id: 2, name: "Premium Cotton T-Shirt", slug: "premium-cotton-tshirt", base_price: 39.99, category_id: 2, is_active: true, images: [], variants: [{ id: 2, price_override: null, stock_qty: 100 }] },
-  { id: 3, name: "Running Shoes Ultra", slug: "running-shoes-ultra", base_price: 129.99, category_id: 3, is_active: true, images: [], variants: [{ id: 3, price_override: null, stock_qty: 50 }] },
-  { id: 4, name: "Smart Watch Series 5", slug: "smart-watch-series-5", base_price: 299.99, category_id: 1, is_active: true, images: [], variants: [{ id: 4, price_override: null, stock_qty: 15 }] },
-  { id: 5, name: "Denim Jacket Classic", slug: "denim-jacket-classic", base_price: 89.99, category_id: 2, is_active: true, images: [], variants: [{ id: 5, price_override: null, stock_qty: 0 }] },
-  { id: 6, name: "Yoga Mat Premium", slug: "yoga-mat-premium", base_price: 49.99, category_id: 5, is_active: true, images: [], variants: [{ id: 6, price_override: null, stock_qty: 75 }] },
-  { id: 7, name: "Leather Wallet", slug: "leather-wallet", base_price: 59.99, category_id: 2, is_active: true, images: [], variants: [{ id: 7, price_override: null, stock_qty: 40 }] },
-  { id: 8, name: "Bluetooth Speaker", slug: "bluetooth-speaker", base_price: 79.99, category_id: 1, is_active: true, images: [], variants: [{ id: 8, price_override: null, stock_qty: 30 }] },
-];
+interface Product {
+  id: number;
+  name: string;
+  slug: string;
+  base_price: number;
+  category_id: number | null;
+  is_active: boolean;
+  images: { url: string; position?: number }[];
+  variants: { id: number; price_override: number | null; stock_qty: number; attributes?: string }[];
+  category?: { id: number; name: string } | null;
+}
 
 const categories = ["All", "Electronics", "Fashion", "Shoes", "Beauty", "Sports", "Furniture"];
 
 export default function ShopPage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const filtered = SAMPLE_PRODUCTS.filter((p) => {
+  useEffect(() => {
+    api.get<Product[]>("/products/")
+      .then((data) => setProducts(data))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const filtered = products.filter((p) => {
     const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = activeCategory === "All" || (activeCategory === "Electronics" && p.category_id === 1) || (activeCategory === "Fashion" && p.category_id === 2) || (activeCategory === "Shoes" && p.category_id === 3) || (activeCategory === "Sports" && p.category_id === 5);
+    const matchesCategory = activeCategory === "All" || (p.category?.name === activeCategory);
     const matchesPrice = p.base_price >= priceRange[0] && p.base_price <= priceRange[1];
     return matchesSearch && matchesCategory && matchesPrice;
   });
@@ -55,7 +66,7 @@ export default function ShopPage() {
               Shop All
               <Sparkles size={24} className="text-primary" />
             </h1>
-            <p className="text-text-secondary mt-1">{filtered.length} products available</p>
+            <p className="text-text-secondary mt-1">{loading ? "Loading..." : `${filtered.length} products available`}</p>
           </motion.div>
         </div>
       </div>
@@ -136,7 +147,12 @@ export default function ShopPage() {
         )}
 
         {/* Products */}
-        {filtered.length > 0 ? (
+        {loading ? (
+          <div className="flex items-center justify-center py-24 text-text-secondary">
+            <Loader2 size={24} className="animate-spin mr-2" />
+            Loading products...
+          </div>
+        ) : filtered.length > 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

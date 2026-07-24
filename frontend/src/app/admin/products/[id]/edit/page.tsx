@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 
 export default function EditProductPage() {
   const params = useParams();
+  const productId = Number(params.id);
 
   return (
     <div>
@@ -18,7 +19,7 @@ export default function EditProductPage() {
         <h1 className="text-2xl font-heading font-bold text-text">Edit Product</h1>
         <p className="text-text-secondary text-sm mt-1">Update product #{params.id}</p>
       </div>
-      <ProductForm initialData={{ name: "", slug: "", description: "", base_price: 0, category_id: null, is_active: true }} />
+      <ProductForm productId={productId} />
     </div>
   );
 }
