@@ -1,10 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, ShoppingCart, User } from "lucide-react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+
+  const socialLinks = [
+    { name: "Facebook", path: "/images/icons/social/facebook.svg" },
+    { name: "Twitter", path: "/images/icons/social/twitter.svg" },
+    { name: "Instagram", path: "/images/icons/social/instagram.svg" },
+    { name: "YouTube", path: "/images/icons/social/youtube.svg" },
+    { name: "Pinterest", path: "/images/icons/social/pinterest.svg" },
+  ];
+
+  const paymentIcons = [
+    { name: "Visa", path: "/images/icons/payment/visa.svg" },
+    { name: "Mastercard", path: "/images/icons/payment/mastercard.svg" },
+    { name: "Amex", path: "/images/icons/payment/amex.svg" },
+    { name: "PayPal", path: "/images/icons/payment/paypal.svg" },
+    { name: "Discover", path: "/images/icons/payment/discover.svg" },
+  ];
 
   return (
     <footer className="bg-card border-t border-border mt-auto">
@@ -18,9 +33,28 @@ export function Footer() {
               </div>
               <span className="font-heading font-bold text-xl text-text">Store</span>
             </Link>
-            <p className="text-text-secondary text-sm leading-relaxed max-w-xs">
+            <p className="text-text-secondary text-sm leading-relaxed max-w-xs mb-4">
               Your premium online shopping destination. Quality products, fast delivery, and exceptional customer service.
             </p>
+            {/* Social Media Icons */}
+            <div className="flex items-center gap-3">
+              {socialLinks.map((social) => (
+                <Link
+                  key={social.name}
+                  href="#"
+                  className="w-8 h-8 bg-border/50 hover:bg-primary/10 rounded-lg flex items-center justify-center transition-colors group"
+                  aria-label={social.name}
+                >
+                  <img
+                    src={social.path}
+                    alt={social.name}
+                    width="16"
+                    height="16"
+                    className="opacity-60 group-hover:opacity-100 transition-opacity"
+                  />
+                </Link>
+              ))}
+            </div>
           </div>
 
           {/* Quick Links */}
@@ -69,16 +103,21 @@ export function Footer() {
           <p className="text-text-secondary text-sm">
             &copy; {currentYear} Store. All rights reserved.
           </p>
-          <div className="flex items-center gap-4">
-            <Link href="#" className="text-text-secondary hover:text-text transition-colors">
-              <Heart size={18} />
-            </Link>
-            <Link href="/cart" className="text-text-secondary hover:text-text transition-colors">
-              <ShoppingCart size={18} />
-            </Link>
-            <Link href="/login" className="text-text-secondary hover:text-text transition-colors">
-              <User size={18} />
-            </Link>
+          {/* Payment Icons */}
+          <div className="flex items-center gap-2">
+            {paymentIcons.map((payment) => (
+              <div
+                key={payment.name}
+                className="h-7 bg-white rounded border border-border/50 px-1.5 flex items-center justify-center"
+                title={payment.name}
+              >
+                <img
+                  src={payment.path}
+                  alt={payment.name}
+                  className="max-h-5 w-auto"
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>

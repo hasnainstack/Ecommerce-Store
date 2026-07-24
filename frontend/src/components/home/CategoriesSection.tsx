@@ -6,12 +6,12 @@ import { Smartphone, Shirt, Footprints, Eye, Dumbbell, Armchair } from "lucide-r
 import Image from "next/image";
 
 const categories = [
-  { name: "Electronics", icon: Smartphone, count: "1,234 items", color: "from-blue-500/20 to-blue-600/10", img: "/images/products/watch.svg" },
-  { name: "Fashion", icon: Shirt, count: "856 items", color: "from-pink-500/20 to-pink-600/10", img: "/images/products/tshirt.svg" },
-  { name: "Shoes", icon: Footprints, count: "567 items", color: "from-amber-500/20 to-amber-600/10", img: "/images/products/shoes.svg" },
-  { name: "Beauty", icon: Eye, count: "432 items", color: "from-rose-500/20 to-rose-600/10", img: "/images/products/beauty.svg" },
-  { name: "Sports", icon: Dumbbell, count: "321 items", color: "from-green-500/20 to-green-600/10", img: "/images/products/sports.svg" },
-  { name: "Furniture", icon: Armchair, count: "198 items", color: "from-purple-500/20 to-purple-600/10", img: "/images/products/furniture.svg" },
+  { name: "Electronics", icon: Smartphone, count: "1,234 items", color: "from-blue-500/20 to-blue-600/10", img: "/images/categories/electronics.png" },
+  { name: "Fashion", icon: Shirt, count: "856 items", color: "from-pink-500/20 to-pink-600/10", img: "/images/categories/fashion.png" },
+  { name: "Shoes", icon: Footprints, count: "567 items", color: "from-amber-500/20 to-amber-600/10", img: "/images/categories/shoes.png" },
+  { name: "Beauty", icon: Eye, count: "432 items", color: "from-rose-500/20 to-rose-600/10", img: "/images/categories/beauty.png" },
+  { name: "Sports", icon: Dumbbell, count: "321 items", color: "from-green-500/20 to-green-600/10", img: "/images/categories/sports.png" },
+  { name: "Furniture", icon: Armchair, count: "198 items", color: "from-purple-500/20 to-purple-600/10", img: "/images/categories/furniture.png" },
 ];
 
 export function CategoriesSection() {

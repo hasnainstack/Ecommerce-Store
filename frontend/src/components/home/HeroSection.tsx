@@ -84,14 +84,21 @@ export function HeroSection() {
               className="flex items-center gap-8 text-sm text-text-secondary"
             >
               <div className="flex -space-x-2">
-                {[1, 2, 3, 4].map((i) => (
+                {[
+                  { initial: "J", color: "bg-blue-500" },
+                  { initial: "S", color: "bg-emerald-500" },
+                  { initial: "M", color: "bg-amber-500" },
+                  { initial: "K", color: "bg-purple-500" },
+                ].map((a, i) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: 0.6 + i * 0.08 }}
-                    className="w-8 h-8 rounded-full border-2 border-card bg-gradient-to-br from-primary/20 to-accent/20"
-                  />
+                    className={`w-8 h-8 rounded-full border-2 border-card ${a.color} flex items-center justify-center text-white text-[10px] font-bold`}
+                  >
+                    {a.initial}
+                  </motion.div>
                 ))}
               </div>
               <span>Join <strong className="text-text">12k+</strong> happy customers</span>
@@ -114,44 +121,32 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative"
           >
-            <div className="relative aspect-square max-w-lg mx-auto">
-              {/* Main card */}
-              <div className="w-full h-full bg-card border border-border rounded-[var(--radius-lg)] shadow-card flex items-center justify-center overflow-hidden">
-                <div className="text-center p-8 relative">
-                  {/* Rotating gradient ring */}
+            <div className="relative aspect-[4/3] max-w-lg mx-auto">
+              {/* Main card with hero banner */}
+              <div className="w-full h-full bg-card border border-border rounded-[var(--radius-lg)] shadow-card overflow-hidden relative">
+                <Image
+                  src="/images/hero-banner.png"
+                  alt="Summer Collection"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority
+                />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                {/* Text overlay */}
+                <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8">
                   <motion.div
-                    className="absolute inset-4 rounded-full opacity-20"
-                    style={{
-                      background: "conic-gradient(from 0deg, #2563EB, #14B8A6, #2563EB)",
-                    }}
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                  />
-                  {/* Inner circle */}
-                  <div className="relative w-48 h-48 sm:w-56 sm:h-56 mx-auto bg-gradient-to-br from-primary/10 via-accent/5 to-accent/10 rounded-full flex items-center justify-center mb-6">
-                    <motion.div
-                      animate={{ y: [0, -8, 0] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                      <span className="text-7xl">🎧</span>
-                    </motion.div>
-                    {/* Orbiting dots */}
-                    <motion.div
-                      className="absolute w-3 h-3 bg-primary rounded-full"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                      style={{ transformOrigin: "100px 100px" }}
-                    />
-                    <motion.div
-                      className="absolute w-2 h-2 bg-accent rounded-full"
-                      animate={{ rotate: -360 }}
-                      transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-                      style={{ transformOrigin: "80px 80px" }}
-                    />
-                  </div>
-                  <h3 className="font-heading font-bold text-2xl text-text">Summer Collection</h3>
-                  <p className="text-primary font-bold text-xl mt-2">Up to 50% OFF</p>
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                  >
+                    <h3 className="font-heading font-bold text-2xl text-white">Summer Collection</h3>
+                    <p className="text-primary font-bold text-xl mt-2">Up to 50% OFF</p>
+                  </motion.div>
                 </div>
+                {/* Corner accent decoration */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-primary/30 to-transparent rounded-bl-full" />
               </div>
 
               {/* Floating info cards */}

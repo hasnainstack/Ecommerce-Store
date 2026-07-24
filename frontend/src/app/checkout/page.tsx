@@ -8,7 +8,7 @@ import { useCartStore } from "@/stores/cart";
 import { useAuthStore } from "@/stores/auth";
 import { formatPrice } from "@/lib/utils";
 import Image from "next/image";
-import { ArrowLeft, CreditCard, Lock, CheckCircle, PartyPopper } from "lucide-react";
+import { ArrowLeft, CreditCard, Lock, CheckCircle, PartyPopper, FlaskConical } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function CheckoutPage() {
@@ -125,8 +125,9 @@ export default function CheckoutPage() {
       <h1 className="text-3xl font-heading font-bold text-text mb-8">Checkout</h1>
 
       {/* Test mode banner */}
-      <div className="bg-warning/10 border border-warning/20 rounded-[var(--radius-lg)] p-3 mb-6 text-sm text-text-secondary text-center">
-        🧪 Test mode — no payment will be processed
+      <div className="bg-warning/10 border border-warning/20 rounded-[var(--radius-lg)] p-3 mb-6 text-sm text-text-secondary text-center flex items-center justify-center gap-2">
+        <FlaskConical size={16} className="text-warning shrink-0" />
+        Test mode — no payment will be processed
       </div>
 
       <div className="grid lg:grid-cols-5 gap-8 lg:gap-12">
