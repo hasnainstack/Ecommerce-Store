@@ -9,6 +9,13 @@ import { getProductPlaceholder } from "@/lib/placeholders";
 import { useCartStore } from "@/stores/cart";
 import { useRouter } from "next/navigation";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+function resolveImageUrl(url: string | undefined): string | undefined {
+  if (!url) return undefined;
+  return url.startsWith("http") ? url : `${API_BASE}${url}`;
+}
+
 interface ProductDetailProps {
   product: {
     id: number;
@@ -75,7 +82,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
           <div className="relative aspect-square bg-gradient-to-br from-border/30 to-border/10 rounded-[var(--radius-lg)] overflow-hidden">
             {images[selectedImage]?.url ? (
               <Image
-                src={images[selectedImage].url}
+                src={resolveImageUrl(images[selectedImage]?.url)!}
                 alt={product.name}
                 fill
                 className="object-cover"
@@ -104,7 +111,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
                   }`}
                 >
                   {img.url ? (
-                    <Image src={img.url} alt="" fill className="object-cover" sizes="80px" />
+                    <Image src={resolveImageUrl(img.url)!} alt="" fill className="object-cover" sizes="80px" />
                   ) : (
                     <div className="w-full h-full bg-border/30 relative p-2">
                       <Image

@@ -9,6 +9,13 @@ import { useCartStore } from "@/stores/cart";
 import { getProductPlaceholder } from "@/lib/placeholders";
 import { useState } from "react";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+function resolveImageUrl(url: string | undefined): string | undefined {
+  if (!url) return undefined;
+  return url.startsWith("http") ? url : `${API_BASE}${url}`;
+}
+
 interface ProductCardProps {
   product: {
     id: number;
@@ -38,7 +45,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <Link href={`/shop/${product.slug}`} className="block relative aspect-square bg-gradient-to-br from-border/30 to-border/10 overflow-hidden">
         {imageUrl && !imgError ? (
           <Image
-            src={imageUrl}
+            src={resolveImageUrl(imageUrl)!}
             alt={product.name}
             fill
             className="object-cover group-hover:scale-110 transition-transform duration-500"

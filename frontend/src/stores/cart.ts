@@ -16,6 +16,7 @@ export interface CartItem {
 interface CartState {
   sessionId: string | null;
   items: CartItem[];
+  _hydrated: boolean;
   setSessionId: (id: string) => void;
   setItems: (items: CartItem[]) => void;
   addItem: (item: CartItem) => void;
@@ -35,6 +36,7 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       sessionId: typeof window !== "undefined" ? generateSessionId() : null,
       items: [],
+      _hydrated: false,
       setSessionId: (id) => set({ sessionId: id }),
       setItems: (items) => set({ items }),
       addItem: (item) =>
@@ -72,6 +74,15 @@ export const useCartStore = create<CartState>()(
       getItemCount: () =>
         get().items.reduce((sum, i) => sum + i.quantity, 0),
     }),
-    { name: "cart-storage" }
+    {
+      name: "cart-storage",
+      partialize: (state) => ({
+        sessionId: state.sessionId,
+        items: state.items,
+      }),
+      onRehydrateStorage: () => () => {
+        useCartStore.setState({ _hydrated: true });
+      },
+    }
   )
 );

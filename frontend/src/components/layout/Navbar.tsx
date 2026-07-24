@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ShoppingCart, Heart, Search, Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui";
@@ -13,6 +13,11 @@ export function Navbar() {
   const { user, logout, isAuthenticated } = useAuthStore();
   const { mobileMenuOpen, setMobileMenuOpen } = useUIStore();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   const navLinks = [
     { label: "Home", href: "/" },
@@ -67,25 +72,31 @@ export function Navbar() {
 
             <Link href="/cart" className="relative p-2 hover:bg-border/50 rounded-lg transition-colors">
               <ShoppingCart size={20} className="text-text-secondary" />
-              {getItemCount() > 0 && (
+              {hydrated && getItemCount() > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                   {getItemCount() > 9 ? "9+" : getItemCount()}
                 </span>
               )}
             </Link>
 
-            {isAuthenticated() ? (
-              <div className="hidden sm:flex items-center gap-2">
-                <Link href={user?.role === "admin" ? "/admin" : "/profile"}>
-                  <Button variant="ghost" size="sm">
-                    <User size={16} className="mr-1.5" />
-                    {user?.email?.split("@")[0] || "Profile"}
-                  </Button>
+            {hydrated ? (
+              isAuthenticated() ? (
+                <div className="hidden sm:flex items-center gap-2">
+                  <Link href={user?.role === "admin" ? "/admin" : "/profile"}>
+                    <Button variant="ghost" size="sm">
+                      <User size={16} className="mr-1.5" />
+                      {user?.email?.split("@")[0] || "Profile"}
+                    </Button>
+                  </Link>
+                  <button onClick={logout} className="p-2 hover:bg-border/50 rounded-lg transition-colors">
+                    <LogOut size={18} className="text-text-secondary" />
+                  </button>
+                </div>
+              ) : (
+                <Link href="/login" className="hidden sm:block">
+                  <Button size="sm">Login</Button>
                 </Link>
-                <button onClick={logout} className="p-2 hover:bg-border/50 rounded-lg transition-colors">
-                  <LogOut size={18} className="text-text-secondary" />
-                </button>
-              </div>
+              )
             ) : (
               <Link href="/login" className="hidden sm:block">
                 <Button size="sm">Login</Button>
@@ -133,22 +144,32 @@ export function Navbar() {
               </Link>
             ))}
             <hr className="border-border my-2" />
-            {isAuthenticated() ? (
-              <>
+            {hydrated ? (
+              isAuthenticated() ? (
+                <>
+                  <Link
+                    href={user?.role === "admin" ? "/admin" : "/profile"}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-4 py-2.5 text-text-secondary hover:text-text hover:bg-border/50 rounded-[var(--radius-sm)] transition-colors"
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    onClick={() => { logout(); setMobileMenuOpen(false); }}
+                    className="block w-full text-left px-4 py-2.5 text-danger hover:bg-danger/5 rounded-[var(--radius-sm)] transition-colors"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
                 <Link
-                  href={user?.role === "admin" ? "/admin" : "/profile"}
+                  href="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-2.5 text-text-secondary hover:text-text hover:bg-border/50 rounded-[var(--radius-sm)] transition-colors"
+                  className="block px-4 py-2.5 text-primary font-medium hover:bg-primary/5 rounded-[var(--radius-sm)] transition-colors"
                 >
-                  Profile
+                  Login / Register
                 </Link>
-                <button
-                  onClick={() => { logout(); setMobileMenuOpen(false); }}
-                  className="block w-full text-left px-4 py-2.5 text-danger hover:bg-danger/5 rounded-[var(--radius-sm)] transition-colors"
-                >
-                  Logout
-                </button>
-              </>
+              )
             ) : (
               <Link
                 href="/login"
