@@ -57,10 +57,20 @@ class OrderListRead(BaseModel):
         from_attributes = True
 
 
+class OrderUpdate(BaseModel):
+    """Admin can update tracking and notes on an order."""
+    tracking_number: Optional[str] = None
+    tracking_carrier: Optional[str] = None
+    admin_notes: Optional[str] = None
+
+
 class AdminOrderRead(OrderRead):
     """Extended order detail for admin — includes customer info."""
     customer_email: str = ""
     customer_name: str = ""
+    tracking_number: str = ""
+    tracking_carrier: str = ""
+    admin_notes: str = ""
 
 
 class OrderStatusUpdate(BaseModel):

@@ -42,6 +42,9 @@ class Order(SQLModel, table=True):
     status: OrderStatus = Field(default=OrderStatus.pending)
     total_amount: float
     shipping_address: str = ""
+    tracking_number: str = ""
+    tracking_carrier: str = ""
+    admin_notes: str = ""
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     items: List["OrderItem"] = Relationship(back_populates="order")

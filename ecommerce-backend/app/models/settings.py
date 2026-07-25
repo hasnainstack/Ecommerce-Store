@@ -19,4 +19,13 @@ class SiteSettings(SQLModel, table=True):
     instagram_url: str = ""
     logo_url: str = ""
     favicon_url: str = ""
+
+    # SMTP
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_use_tls: bool = True
+    from_email: str = ""
+
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

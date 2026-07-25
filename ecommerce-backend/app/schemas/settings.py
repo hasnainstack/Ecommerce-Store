@@ -19,6 +19,12 @@ class SiteSettingsRead(BaseModel):
     instagram_url: str
     logo_url: str
     favicon_url: str
+    smtp_host: str
+    smtp_port: int
+    smtp_user: str
+    smtp_password: str
+    smtp_use_tls: bool
+    from_email: str
     updated_at: datetime
 
     class Config:
@@ -40,3 +46,9 @@ class SiteSettingsUpdate(BaseModel):
     instagram_url: Optional[str] = None
     logo_url: Optional[str] = None
     favicon_url: Optional[str] = None
+    smtp_host: Optional[str] = None
+    smtp_port: Optional[int] = None
+    smtp_user: Optional[str] = None
+    smtp_password: Optional[str] = None
+    smtp_use_tls: Optional[bool] = None
+    from_email: Optional[str] = None
