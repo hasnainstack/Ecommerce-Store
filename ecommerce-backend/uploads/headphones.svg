@@ -1,0 +1,23 @@
+<svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" rx="0" fill="url(#grad)"/>
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="400" y2="400">
+      <stop offset="0%" stop-color="#EEF2FF"/>
+      <stop offset="100%" stop-color="#E0E7FF"/>
+    </linearGradient>
+  </defs>
+  <!-- Headband -->
+  <path d="M130 180C130 100 270 100 270 180V220" stroke="#2563EB" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.3"/>
+  <!-- Earcups -->
+  <rect x="100" y="200" width="60" height="80" rx="16" fill="#2563EB" opacity="0.15"/>
+  <rect x="240" y="200" width="60" height="80" rx="16" fill="#2563EB" opacity="0.15"/>
+  <rect x="108" y="210" width="44" height="50" rx="10" fill="#2563EB" opacity="0.25"/>
+  <rect x="248" y="210" width="44" height="50" rx="10" fill="#2563EB" opacity="0.25"/>
+  <!-- Cushion detail -->
+  <rect x="114" y="218" width="32" height="34" rx="8" fill="#2563EB" opacity="0.4"/>
+  <rect x="254" y="218" width="32" height="34" rx="8" fill="#2563EB" opacity="0.4"/>
+  <!-- Waves -->
+  <path d="M170 250C180 230 190 270 200 250C210 230 220 270 230 250" stroke="#2563EB" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.4"/>
+  <circle cx="200" cy="300" r="40" stroke="#2563EB" stroke-width="2" fill="none" opacity="0.2"/>
+  <circle cx="200" cy="300" r="55" stroke="#2563EB" stroke-width="1.5" fill="none" opacity="0.15"/>
+</svg>

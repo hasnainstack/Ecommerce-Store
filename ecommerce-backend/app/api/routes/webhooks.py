@@ -27,35 +27,25 @@ def _handle_checkout_completed(event: dict, session: Session, redis: Redis) -> N
         return
 
     order = session.get(Order, payment.order_id)
-    if not order or order.status != OrderStatus.pending:
+    if not order:
         return
 
-    # Decrement stock atomically
-    items = session.exec(
-        select(OrderItem).where(OrderItem.order_id == order.id)
-    ).all()
-
-    for item in items:
-        if item.variant_id is None:
-            continue
-        variant = session.exec(
-            select(ProductVariant)
-            .where(ProductVariant.id == item.variant_id)
-            .with_for_update()
-        ).first()
-        if variant:
-            if variant.stock_qty >= item.quantity:
-                variant.stock_qty -= item.quantity
-            else:
-                variant.stock_qty = 0  # sell what remains
-            session.add(variant)
-
-    order.status = OrderStatus.paid
+    # Update payment status
     payment.status = PaymentStatus.succeeded
     payment.stripe_payment_intent_id = payment_intent
-    session.add(order)
     session.add(payment)
-    session.commit()
+
+    # Transition order via state machine
+    from app.services.order_service import transition_order_status
+    order, err = transition_order_status(
+        session, order.id, OrderStatus.paid,
+        changed_by="stripe",
+        reason="Payment completed via Stripe",
+    )
+    if err:
+        # Order might not be in a state to transition (e.g. already confirmed by admin)
+        # Just save the payment update
+        session.commit()
 
 
 def _handle_checkout_expired(event: dict, session: Session, redis: Redis) -> None:
@@ -67,12 +57,18 @@ def _handle_checkout_expired(event: dict, session: Session, redis: Redis) -> Non
     if not payment:
         return
     order = session.get(Order, payment.order_id)
-    if order and order.status == OrderStatus.pending:
-        order.status = OrderStatus.cancelled
+    if order:
         payment.status = PaymentStatus.failed
-        session.add(order)
         session.add(payment)
-        session.commit()
+
+        from app.services.order_service import transition_order_status
+        order, err = transition_order_status(
+            session, order.id, OrderStatus.cancelled,
+            changed_by="stripe",
+            reason="Checkout session expired",
+        )
+        if err:
+            session.commit()
 
 
 def _handle_charge_refunded(event: dict, session: Session, redis: Redis) -> None:
@@ -83,7 +79,18 @@ def _handle_charge_refunded(event: dict, session: Session, redis: Redis) -> None
     if payment:
         payment.status = PaymentStatus.refunded
         session.add(payment)
-        session.commit()
+
+        if payment.order_id:
+            from app.services.order_service import transition_order_status
+            order, err = transition_order_status(
+                session, payment.order_id, OrderStatus.refunded,
+                changed_by="stripe",
+                reason="Charge refunded via Stripe",
+            )
+            if err:
+                session.commit()
+        else:
+            session.commit()
 
 
 HANDLERS = {

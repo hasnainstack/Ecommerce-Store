@@ -30,6 +30,14 @@ def search(
     return SearchResults(items=products, total=total)
 
 
+@router.get("/slug/{slug}", response_model=ProductRead)
+def get_product_by_slug(slug: str, session: Session = Depends(get_session)):
+    product = product_crud.get_product_by_slug(session, slug)
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return product
+
+
 @router.get("/{product_id}", response_model=ProductRead)
 def get_product(product_id: int, session: Session = Depends(get_session)):
     product = product_crud.get_product(session, product_id)

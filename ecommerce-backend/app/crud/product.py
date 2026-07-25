@@ -24,6 +24,17 @@ def get_product(session: Session, product_id: int) -> Optional[Product]:
     return session.exec(stmt).first()
 
 
+def get_product_by_slug(session: Session, slug: str) -> Optional[Product]:
+    stmt = (
+        select(Product)
+        .where(Product.slug == slug, Product.is_active == True)
+        .options(selectinload(Product.category))
+        .options(selectinload(Product.variants))
+        .options(selectinload(Product.images))
+    )
+    return session.exec(stmt).first()
+
+
 def list_products(session: Session, skip: int = 0, limit: int = 50) -> List[Product]:
     stmt = (
         select(Product)

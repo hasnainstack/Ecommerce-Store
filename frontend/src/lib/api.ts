@@ -68,6 +68,12 @@ async function request<T>(
     if (newToken) {
       headers["Authorization"] = `Bearer ${newToken}`;
       res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+    } else {
+      // Refresh failed — clear stale tokens and redirect to login
+      localStorage.removeItem("auth-storage");
+      if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+        window.location.href = "/login";
+      }
     }
   }
 

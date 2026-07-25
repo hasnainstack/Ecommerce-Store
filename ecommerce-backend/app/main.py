@@ -5,6 +5,10 @@ from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
 from app.core.database import init_db
 from app.api.routes import products, auth, cart, orders, checkout, webhooks, categories
+from app.api.routes import settings as settings_router
+from app.api.routes import attributes as attributes_router
+from app.api.routes import admin_categories as admin_categories_router
+from app.api.routes import variants as variants_router
 
 app = FastAPI(title="Store API", version="0.2.0")
 
@@ -29,6 +33,10 @@ app.include_router(cart.router)
 app.include_router(orders.router)
 app.include_router(checkout.router)
 app.include_router(webhooks.router)
+app.include_router(settings_router.router)
+app.include_router(attributes_router.router)
+app.include_router(admin_categories_router.router)
+app.include_router(variants_router.router)
 
 
 @app.on_event("startup")

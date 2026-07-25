@@ -1,0 +1,33 @@
+<svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="url(#grad)"/>
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="400" y2="400">
+      <stop offset="0%" stop-color="#F3E8FF"/>
+      <stop offset="100%" stop-color="#E9D5FF"/>
+    </linearGradient>
+  </defs>
+  <!-- Couch base -->
+  <rect x="80" y="220" width="240" height="90" rx="16" fill="#2563EB" opacity="0.12"/>
+  <rect x="85" y="225" width="230" height="80" rx="14" fill="#2563EB" opacity="0.08"/>
+  <!-- Seat cushion -->
+  <rect x="95" y="240" width="210" height="50" rx="10" fill="#2563EB" opacity="0.15"/>
+  <!-- Backrest -->
+  <path d="M90 220L95 140C100 125 120 110 140 110L260 110C280 110 300 125 305 140L310 220" fill="#2563EB" opacity="0.1"/>
+  <path d="M95 215L100 143C105 130 122 118 140 118L260 118C278 118 295 130 300 143L305 215" stroke="#2563EB" stroke-width="2.5" fill="none" opacity="0.3"/>
+  <!-- Armrest left -->
+  <rect x="82" y="195" width="30" height="85" rx="10" fill="#2563EB" opacity="0.15"/>
+  <rect x="85" y="200" width="24" height="75" rx="8" fill="#2563EB" opacity="0.1"/>
+  <!-- Armrest right -->
+  <rect x="288" y="195" width="30" height="85" rx="10" fill="#2563EB" opacity="0.15"/>
+  <rect x="291" y="200" width="24" height="75" rx="8" fill="#2563EB" opacity="0.1"/>
+  <!-- Legs -->
+  <rect x="100" y="308" width="12" height="18" rx="3" fill="#2563EB" opacity="0.2"/>
+  <rect x="288" y="308" width="12" height="18" rx="3" fill="#2563EB" opacity="0.2"/>
+  <!-- Pillow left -->
+  <ellipse cx="135" cy="260" rx="25" ry="15" fill="#2563EB" opacity="0.12"/>
+  <!-- Pillow right -->
+  <ellipse cx="265" cy="260" rx="25" ry="15" fill="#2563EB" opacity="0.12"/>
+  <!-- Cushion line -->
+  <line x1="195" y1="245" x2="195" y2="285" stroke="#2563EB" stroke-width="2" opacity="0.12"/>
+  <line x1="205" y1="245" x2="205" y2="285" stroke="#2563EB" stroke-width="2" opacity="0.12"/>
+</svg>

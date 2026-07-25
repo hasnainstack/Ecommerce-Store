@@ -1,0 +1,26 @@
+<svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="url(#grad)"/>
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="400" y2="400">
+      <stop offset="0%" stop-color="#FDF2F8"/>
+      <stop offset="100%" stop-color="#FCE7F3"/>
+    </linearGradient>
+  </defs>
+  <!-- T-Shirt Body -->
+  <path d="M140 100L100 130L130 160V280C130 290 140 300 150 300H250C260 300 270 290 270 280V160L300 130L260 100H230L200 130L170 100H140Z" fill="#2563EB" opacity="0.12"/>
+  <path d="M145 110L110 135L135 160V275C135 283 143 290 150 290H250C257 290 265 283 265 275V160L290 135L255 110H235L200 140L165 110H145Z" stroke="#2563EB" stroke-width="3" fill="none" opacity="0.3"/>
+  <!-- Collar -->
+  <path d="M175 110L200 140L225 110" stroke="#2563EB" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.4"/>
+  <!-- Stripes -->
+  <line x1="160" y1="170" x2="240" y2="170" stroke="#2563EB" stroke-width="2" opacity="0.15"/>
+  <line x1="160" y1="190" x2="240" y2="190" stroke="#2563EB" stroke-width="2" opacity="0.1"/>
+  <line x1="160" y1="210" x2="240" y2="210" stroke="#2563EB" stroke-width="2" opacity="0.15"/>
+  <line x1="160" y1="230" x2="240" y2="230" stroke="#2563EB" stroke-width="2" opacity="0.1"/>
+  <line x1="160" y1="250" x2="240" y2="250" stroke="#2563EB" stroke-width="2" opacity="0.15"/>
+  <!-- Sleeve details -->
+  <path d="M100 130L130 160L130 150L105 120Z" fill="#2563EB" opacity="0.1"/>
+  <path d="M300 130L270 160L270 150L295 120Z" fill="#2563EB" opacity="0.1"/>
+  <!-- Tag -->
+  <rect x="255" y="180" width="30" height="16" rx="3" fill="#2563EB" opacity="0.2"/>
+  <rect x="260" y="185" width="20" height="6" rx="1" fill="#2563EB" opacity="0.3"/>
+</svg>

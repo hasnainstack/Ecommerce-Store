@@ -6,10 +6,27 @@ from sqlmodel import SQLModel, Field, Relationship
 
 class OrderStatus(str, Enum):
     pending = "pending"
-    paid = "paid"
+    confirmed = "confirmed"
+    processing = "processing"
     shipped = "shipped"
     delivered = "delivered"
     cancelled = "cancelled"
+    refunded = "refunded"
+
+    def can_transition_to(self, target: "OrderStatus") -> bool:
+        return target in _ORDER_TRANSITIONS.get(self, set())
+
+
+# Module-level transitions dict (avoids Python Enum treating it as a member)
+_ORDER_TRANSITIONS = {
+    OrderStatus.pending: {OrderStatus.confirmed, OrderStatus.cancelled},
+    OrderStatus.confirmed: {OrderStatus.processing, OrderStatus.cancelled, OrderStatus.refunded},
+    OrderStatus.processing: {OrderStatus.shipped, OrderStatus.cancelled, OrderStatus.refunded},
+    OrderStatus.shipped: {OrderStatus.delivered, OrderStatus.cancelled, OrderStatus.refunded},
+    OrderStatus.delivered: {OrderStatus.refunded},
+    OrderStatus.cancelled: set(),
+    OrderStatus.refunded: set(),
+}
 
 
 class PaymentStatus(str, Enum):
@@ -29,6 +46,10 @@ class Order(SQLModel, table=True):
 
     items: List["OrderItem"] = Relationship(back_populates="order")
     payments: List["Payment"] = Relationship(back_populates="order")
+    status_history: List["OrderStatusHistory"] = Relationship(
+        back_populates="order",
+        sa_relationship_kwargs={"order_by": "OrderStatusHistory.created_at"},
+    )
 
 
 class OrderItem(SQLModel, table=True):
@@ -60,3 +81,15 @@ class Payment(SQLModel, table=True):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     order: Optional[Order] = Relationship(back_populates="payments")
+
+
+class OrderStatusHistory(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    order_id: int = Field(foreign_key="order.id", index=True)
+    from_status: Optional[str] = None  # None for initial creation
+    to_status: str
+    changed_by: str = "system"  # email or "system"
+    reason: str = ""
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+    order: Optional[Order] = Relationship(back_populates="status_history")

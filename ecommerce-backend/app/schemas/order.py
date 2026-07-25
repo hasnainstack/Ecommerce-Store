@@ -20,6 +20,18 @@ class OrderItemRead(BaseModel):
         from_attributes = True
 
 
+class OrderStatusHistoryRead(BaseModel):
+    id: int
+    from_status: Optional[str] = None
+    to_status: str
+    changed_by: str
+    reason: str = ""
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
 class OrderRead(BaseModel):
     id: int
     user_id: int
@@ -28,6 +40,7 @@ class OrderRead(BaseModel):
     shipping_address: str = ""
     created_at: datetime
     items: List[OrderItemRead] = []
+    status_history: List[OrderStatusHistoryRead] = []
 
     class Config:
         from_attributes = True
@@ -44,8 +57,25 @@ class OrderListRead(BaseModel):
         from_attributes = True
 
 
+class AdminOrderRead(OrderRead):
+    """Extended order detail for admin — includes customer info."""
+    customer_email: str = ""
+    customer_name: str = ""
+
+
 class OrderStatusUpdate(BaseModel):
     status: OrderStatus
+    reason: str = ""
+
+
+class OrderStatusUpdateResponse(BaseModel):
+    order: OrderRead
+    history: OrderStatusHistoryRead
+
+
+class AdminOrderListResponse(BaseModel):
+    data: List[AdminOrderRead]
+    total: int
 
 
 # --- Cart schemas ---

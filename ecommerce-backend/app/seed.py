@@ -17,7 +17,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from sqlmodel import Session, select
 from app.core.database import engine, init_db
+from app.core.security import hash_password
 from app.models.product import Category, Product, ProductVariant, ProductImage
+from app.models.user import User, UserRole
 
 
 # ── Source of placeholder images ──────────────────────────────────
@@ -172,9 +174,23 @@ def seed():
     backend_uploads.mkdir(exist_ok=True)
 
     with Session(engine) as session:
+        # ── Admin user ────────────────────────────────────────────────
+        admin = session.exec(select(User).where(User.email == "admin@store.com")).first()
+        if not admin:
+            admin = User(
+                email="admin@store.com",
+                hashed_password=hash_password("admin123"),
+                role=UserRole.admin,
+                is_active=True,
+            )
+            session.add(admin)
+            session.flush()
+            print("✅ Created admin user: admin@store.com / admin123")
+
         # ── Check if already seeded ──────────────────────────────────
         existing = session.exec(select(Product).limit(1)).first()
         if existing:
+            session.commit()  # persist the admin user if newly created
             print("Database already has products — skipping seed.")
             print("Run with --force to re-seed: python -m app.seed --force")
             return

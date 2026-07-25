@@ -1,0 +1,36 @@
+<svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="url(#grad)"/>
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="400" y2="400">
+      <stop offset="0%" stop-color="#FFF1F2"/>
+      <stop offset="100%" stop-color="#FFE4E6"/>
+    </linearGradient>
+  </defs>
+  <!-- Lipstick -->
+  <rect x="155" y="120" width="90" height="30" rx="8" fill="#2563EB" opacity="0.15"/>
+  <rect x="160" y="125" width="80" height="20" rx="6" fill="#2563EB" opacity="0.25"/>
+  <!-- Lipstick Bullet -->
+  <path d="M170 120L175 95C178 88 185 85 200 85C215 85 222 88 225 95L230 120" fill="#2563EB" opacity="0.2"/>
+  <path d="M175 115L178 98C180 93 186 90 200 90C214 90 220 93 222 98L225 115" fill="#2563EB" opacity="0.35"/>
+  <!-- Bottle body -->
+  <rect x="148" y="170" width="104" height="130" rx="16" fill="#2563EB" opacity="0.08"/>
+  <rect x="155" y="180" width="90" height="110" rx="12" fill="#2563EB" opacity="0.12"/>
+  <!-- Bottle neck -->
+  <rect x="175" y="150" width="50" height="22" rx="4" fill="#2563EB" opacity="0.15"/>
+  <!-- Bottle cap -->
+  <rect x="172" y="142" width="56" height="12" rx="4" fill="#2563EB" opacity="0.2"/>
+  <!-- Liquid inside -->
+  <rect x="162" y="215" width="76" height="65" rx="8" fill="#2563EB" opacity="0.2"/>
+  <!-- Shimmer dots -->
+  <circle cx="185" cy="240" r="3" fill="#2563EB" opacity="0.3"/>
+  <circle cx="210" cy="255" r="2" fill="#2563EB" opacity="0.25"/>
+  <circle cx="195" cy="265" r="2.5" fill="#2563EB" opacity="0.2"/>
+  <circle cx="215" cy="235" r="2" fill="#2563EB" opacity="0.2"/>
+  <!-- Label -->
+  <rect x="175" y="225" width="50" height="30" rx="4" fill="#2563EB" opacity="0.15"/>
+  <rect x="182" y="237" width="36" height="6" rx="2" fill="#2563EB" opacity="0.25"/>
+  <!-- Sparkles -->
+  <path d="M130 150L135 140L140 150L135 160Z" fill="#2563EB" opacity="0.15"/>
+  <path d="M270 130L275 120L280 130L275 140Z" fill="#2563EB" opacity="0.15"/>
+  <path d="M260 250L265 240L270 250L265 260Z" fill="#2563EB" opacity="0.1"/>
+</svg>
