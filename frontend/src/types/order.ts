@@ -78,6 +78,9 @@ export interface OrderRead {
 export interface AdminOrderRead extends OrderRead {
   customer_email: string;
   customer_name: string;
+  tracking_number: string;
+  tracking_carrier: string;
+  admin_notes: string;
 }
 
 export interface AdminOrderListResponse {

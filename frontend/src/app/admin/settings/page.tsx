@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Save } from "lucide-react";
+import { Save, Send, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
@@ -25,6 +25,12 @@ interface SiteSettings {
   instagram_url: string;
   logo_url: string;
   favicon_url: string;
+  smtp_host: string;
+  smtp_port: number;
+  smtp_user: string;
+  smtp_password: string;
+  smtp_use_tls: boolean;
+  from_email: string;
   updated_at: string;
 }
 
@@ -44,6 +50,12 @@ const defaults: SiteSettings = {
   instagram_url: "",
   logo_url: "",
   favicon_url: "",
+  smtp_host: "",
+  smtp_port: 587,
+  smtp_user: "",
+  smtp_password: "",
+  smtp_use_tls: true,
+  from_email: "",
   updated_at: "",
 };
 
@@ -66,6 +78,11 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
+  // Test-email state
+  const [testEmail, setTestEmail] = useState("");
+  const [testSending, setTestSending] = useState(false);
+  const [testResult, setTestResult] = useState<{ ok: boolean; detail: string } | null>(null);
+
   const fetchSettings = useCallback(async () => {
     setLoading(true);
     try {
@@ -85,7 +102,13 @@ export default function SettingsPage() {
   const updateField = (field: keyof SiteSettings) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const value = e.target.type === "number" ? parseFloat(e.target.value) || 0 : e.target.value;
+    const target = e.target;
+    let value: string | number | boolean = target.value;
+    if (target.type === "number") {
+      value = parseFloat(target.value) || 0;
+    } else if (target.type === "checkbox") {
+      value = (target as HTMLInputElement).checked;
+    }
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -108,6 +131,12 @@ export default function SettingsPage() {
         instagram_url: form.instagram_url,
         logo_url: form.logo_url,
         favicon_url: form.favicon_url,
+        smtp_host: form.smtp_host,
+        smtp_port: form.smtp_port,
+        smtp_user: form.smtp_user,
+        smtp_password: form.smtp_password,
+        smtp_use_tls: form.smtp_use_tls,
+        from_email: form.from_email,
       });
       setForm(updated);
       showToast("Settings saved", "success");
@@ -116,6 +145,25 @@ export default function SettingsPage() {
       showToast(msg, "error");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleTestEmail = async () => {
+    if (!testEmail.trim()) {
+      showToast("Enter a recipient email address", "error");
+      return;
+    }
+    setTestSending(true);
+    setTestResult(null);
+    try {
+      const result = await api.post<{ ok: boolean; detail: string }>("/admin/settings/test-email", {
+        to_email: testEmail.trim(),
+      });
+      setTestResult(result);
+    } catch (err) {
+      setTestResult({ ok: false, detail: err instanceof Error ? err.message : "Request failed" });
+    } finally {
+      setTestSending(false);
     }
   };
 
@@ -131,25 +179,24 @@ export default function SettingsPage() {
           <Skeleton className="h-48 rounded-[var(--radius-lg)]" />
           <Skeleton className="h-48 rounded-[var(--radius-lg)]" />
           <Skeleton className="h-48 rounded-[var(--radius-lg)]" />
+          <Skeleton className="h-48 rounded-[var(--radius-lg)]" />
         </div>
       </div>
     );
   }
 
   return (
-    <div>
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
       <div className="mb-6 flex items-start justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-heading font-bold text-text">Settings</h1>
           <p className="text-text-secondary text-sm mt-1">Manage your store configuration</p>
         </div>
-        <Button variant="primary" onClick={handleSubmit} loading={saving}>
+        <Button variant="primary" type="submit" loading={saving}>
           <Save size={16} className="mr-1.5" />
           Save Changes
         </Button>
       </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
         {/* General */}
         <SectionCard title="General">
           <Input
@@ -266,7 +313,105 @@ export default function SettingsPage() {
             onChange={updateField("free_shipping_min")}
           />
         </SectionCard>
-      </form>
-    </div>
+
+        {/* SMTP / Email */}
+        <SectionCard title="Email (SMTP)">
+          <p className="text-sm text-text-secondary -mt-2">
+            Configure your SMTP server to send transactional emails (order confirmations, password resets, etc.).
+          </p>
+          <Input
+            id="smtp_host"
+            label="SMTP Host"
+            value={form.smtp_host}
+            onChange={updateField("smtp_host")}
+            placeholder="smtp.gmail.com"
+          />
+          <div className="grid grid-cols-2 gap-4">
+            <Input
+              id="smtp_port"
+              label="SMTP Port"
+              type="number"
+              min="1"
+              max="65535"
+              value={form.smtp_port}
+              onChange={updateField("smtp_port")}
+              placeholder="587"
+            />
+            <div className="flex items-end pb-2.5">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.smtp_use_tls}
+                  onChange={(e) => setForm((prev) => ({ ...prev, smtp_use_tls: e.target.checked }))}
+                  className="w-4 h-4 rounded border-border accent-primary"
+                />
+                <span className="text-sm text-text">Use TLS</span>
+              </label>
+            </div>
+          </div>
+          <Input
+            id="smtp_user"
+            label="SMTP Username"
+            value={form.smtp_user}
+            onChange={updateField("smtp_user")}
+            placeholder="you@gmail.com"
+            autoComplete="off"
+          />
+          <Input
+            id="smtp_password"
+            label="SMTP Password"
+            type="password"
+            value={form.smtp_password}
+            onChange={updateField("smtp_password")}
+            placeholder="App password or SMTP password"
+            autoComplete="off"
+          />
+          <Input
+            id="from_email"
+            label="From Email"
+            type="email"
+            value={form.from_email}
+            onChange={updateField("from_email")}
+            placeholder="noreply@yourstore.com"
+          />
+
+          {/* Test email */}
+          <div className="pt-3 border-t border-border mt-2">
+            <p className="text-sm font-medium text-text mb-3">Send Test Email</p>
+            <div className="flex items-end gap-3">
+              <div className="flex-1">
+                <Input
+                  id="test_email_recipient"
+                  placeholder="recipient@example.com"
+                  type="email"
+                  value={testEmail}
+                  onChange={(e) => {
+                    setTestEmail(e.target.value);
+                    setTestResult(null);
+                  }}
+                />
+              </div>
+              <Button
+                variant="secondary"
+                onClick={handleTestEmail}
+                loading={testSending}
+                disabled={testSending}
+                type="button"
+              >
+                <Send size={14} className="mr-1.5" />
+                Send Test
+              </Button>
+            </div>
+            {testResult && (
+              <div className={`mt-3 flex items-start gap-2 text-sm p-3 rounded-[var(--radius-sm)] ${
+                testResult.ok ? "bg-success/10 text-success" : "bg-danger/10 text-danger"
+              }`}>
+                {testResult.ok ? <CheckCircle size={16} className="mt-0.5 shrink-0" /> : <XCircle size={16} className="mt-0.5 shrink-0" />}
+                <span>{testResult.detail}</span>
+              </div>
+            )}
+          </div>
+        </SectionCard>
+    </form>
   );
 }

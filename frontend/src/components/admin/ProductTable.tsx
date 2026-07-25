@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge, Button, Modal } from "@/components/ui";
-import { Plus, Eye, Edit, Trash2, Search, Loader2, AlertTriangle, Filter } from "lucide-react";
+import { Plus, Eye, Edit, Trash2, Search, Loader2, AlertTriangle, Download, Upload } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { api } from "@/lib/api";
 import { getProductPlaceholder } from "@/lib/placeholders";
+import { useUIStore } from "@/stores/ui";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -24,12 +25,15 @@ interface ProductTableItem {
 }
 
 export function ProductTable() {
+  const { showToast } = useUIStore();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [products, setProducts] = useState<ProductTableItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [showLowStock, setShowLowStock] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [importing, setImporting] = useState(false);
 
   useEffect(() => {
     api.get<ProductTableItem[]>("/products/")
@@ -37,6 +41,69 @@ export function ProductTable() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  const handleExport = () => {
+    const token = localStorage.getItem("auth-storage")
+      ? JSON.parse(localStorage.getItem("auth-storage")!).state?.accessToken
+      : null;
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+    fetch(`${API_BASE}/products/admin/export/csv`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
+      .then((res) => res.blob())
+      .then((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "products.csv";
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("Products exported", "success");
+      })
+      .catch(() => showToast("Export failed", "error"));
+  };
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImporting(true);
+    try {
+      const token = localStorage.getItem("auth-storage")
+        ? JSON.parse(localStorage.getItem("auth-storage")!).state?.accessToken
+        : null;
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch(`${API_BASE}/products/admin/import/csv`, {
+        method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.detail || "Import failed");
+      }
+
+      const result = await res.json();
+      showToast(
+        `${result.created} created, ${result.updated} updated` +
+          (result.errors?.length ? `, ${result.errors.length} errors` : ""),
+        result.errors?.length ? "error" : "success"
+      );
+
+      // Refresh list
+      const data = await api.get<ProductTableItem[]>("/products/");
+      setProducts(data);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Import failed", "error");
+    } finally {
+      setImporting(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
 
   const handleDelete = async () => {
     if (deleteId === null) return;
@@ -94,12 +161,35 @@ export function ProductTable() {
             <span className="hidden sm:inline">Low Stock</span>
           </button>
         </div>
-        <Link href="/admin/products/new">
-          <Button size="sm">
-            <Plus size={16} className="mr-1.5" />
-            Add Product
+        <div className="flex items-center gap-2">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv"
+            className="hidden"
+            onChange={handleImport}
+            disabled={importing}
+          />
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => fileInputRef.current?.click()}
+            loading={importing}
+          >
+            <Upload size={15} className="mr-1.5" />
+            Import CSV
           </Button>
-        </Link>
+          <Button variant="secondary" size="sm" onClick={handleExport}>
+            <Download size={15} className="mr-1.5" />
+            Export CSV
+          </Button>
+          <Link href="/admin/products/new">
+            <Button size="sm">
+              <Plus size={16} className="mr-1.5" />
+              Add Product
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Table */}

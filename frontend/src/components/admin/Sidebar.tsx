@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, Package, ShoppingCart, Users, BarChart3, Settings, X, ChevronLeft,
-  ListChecks, FolderTree,
+  ListChecks, FolderTree, ImageIcon, FileText, Activity,
 } from "lucide-react";
 import { useUIStore } from "@/stores/ui";
 
@@ -16,7 +16,10 @@ const navItems = [
   { href: "/admin/customers", icon: Users, label: "Customers" },
   { href: "/admin/attributes", icon: ListChecks, label: "Attributes" },
   { href: "/admin/categories", icon: FolderTree, label: "Categories" },
+  { href: "/admin/media", icon: ImageIcon, label: "Media" },
+  { href: "/admin/cms", icon: FileText, label: "Pages" },
   { href: "#", icon: BarChart3, label: "Analytics" },
+  { href: "/admin/activity", icon: Activity, label: "Activity" },
   { href: "/admin/settings", icon: Settings, label: "Settings" },
 ];
 

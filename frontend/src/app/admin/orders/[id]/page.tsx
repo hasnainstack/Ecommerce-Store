@@ -3,9 +3,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { ArrowLeft, Package } from "lucide-react";
+import { ArrowLeft, Package, Truck, Save, FileText } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
 import { Modal } from "@/components/ui/Modal";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { OrderTimeline } from "@/components/admin/OrderTimeline";
@@ -16,6 +18,7 @@ import {
   ORDER_STATUS_COLORS,
   ORDER_TRANSITIONS,
 } from "@/types/order";
+import { useUIStore } from "@/stores/ui";
 import type {
   AdminOrderRead,
   OrderStatus,
@@ -44,6 +47,7 @@ function formatDateTime(iso: string): string {
 export default function OrderDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { showToast } = useUIStore();
   const orderId = Number(params.id);
 
   const [order, setOrder] = useState<AdminOrderRead | null>(null);
@@ -56,12 +60,21 @@ export default function OrderDetailPage() {
   const [reason, setReason] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  // Tracking & notes
+  const [trackingNumber, setTrackingNumber] = useState("");
+  const [trackingCarrier, setTrackingCarrier] = useState("");
+  const [adminNotes, setAdminNotes] = useState("");
+  const [savingDetails, setSavingDetails] = useState(false);
+
   const fetchOrder = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
       const res = await api.get<AdminOrderRead>(`/orders/admin/${orderId}`);
       setOrder(res);
+      setTrackingNumber(res.tracking_number || "");
+      setTrackingCarrier(res.tracking_carrier || "");
+      setAdminNotes(res.admin_notes || "");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to load order");
     } finally {
@@ -98,6 +111,22 @@ export default function OrderDetailPage() {
       alert(msg);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleSaveDetails = async () => {
+    setSavingDetails(true);
+    try {
+      const updated = await api.patch<AdminOrderRead>(`/orders/admin/${orderId}/details`, {
+        tracking_number: trackingNumber,
+        tracking_carrier: trackingCarrier,
+        admin_notes: adminNotes,
+      });
+      setOrder(updated);
+    } catch {
+      showToast("Failed to save order details", "error");
+    } finally {
+      setSavingDetails(false);
     }
   };
 
@@ -252,6 +281,67 @@ export default function OrderDetailPage() {
               <p className="text-sm text-text whitespace-pre-wrap">{order.shipping_address}</p>
             </div>
           )}
+
+          {/* Tracking */}
+          <div className="bg-card border border-border rounded-[var(--radius-lg)] p-5 lg:p-6">
+            <h2 className="text-lg font-heading font-semibold text-text mb-4 flex items-center gap-2">
+              <Truck size={16} />
+              Tracking
+            </h2>
+            <div className="space-y-3">
+              <Input
+                id="tracking_carrier"
+                label="Carrier"
+                value={trackingCarrier}
+                onChange={(e) => setTrackingCarrier(e.target.value)}
+                placeholder="UPS, FedEx, USPS..."
+              />
+              <Input
+                id="tracking_number"
+                label="Tracking Number"
+                value={trackingNumber}
+                onChange={(e) => setTrackingNumber(e.target.value)}
+                placeholder="1Z999AA10123456784"
+              />
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleSaveDetails}
+                loading={savingDetails}
+                className="w-full"
+              >
+                <Save size={14} className="mr-1.5" />
+                Save Tracking
+              </Button>
+            </div>
+          </div>
+
+          {/* Admin Notes */}
+          <div className="bg-card border border-border rounded-[var(--radius-lg)] p-5 lg:p-6">
+            <h2 className="text-lg font-heading font-semibold text-text mb-4 flex items-center gap-2">
+              <FileText size={16} />
+              Notes
+            </h2>
+            <div className="space-y-3">
+              <textarea
+                value={adminNotes}
+                onChange={(e) => setAdminNotes(e.target.value)}
+                placeholder="Internal notes about this order..."
+                rows={4}
+                className="w-full px-4 py-2.5 bg-white border border-border rounded-[var(--radius-sm)] text-sm text-text placeholder:text-text-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors resize-none"
+              />
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleSaveDetails}
+                loading={savingDetails}
+                className="w-full"
+              >
+                <Save size={14} className="mr-1.5" />
+                Save Notes
+              </Button>
+            </div>
+          </div>
 
           {/* Actions */}
           {validTransitions.length > 0 && (
