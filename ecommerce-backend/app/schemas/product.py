@@ -8,6 +8,7 @@ class ProductCreate(BaseModel):
     description: str = ""
     base_price: float = Field(gt=0)
     category_id: Optional[int] = None
+    low_stock_threshold: int = 5
 
 
 class ProductUpdate(BaseModel):
@@ -17,6 +18,7 @@ class ProductUpdate(BaseModel):
     base_price: Optional[float] = Field(default=None, gt=0)
     category_id: Optional[int] = None
     is_active: Optional[bool] = None
+    low_stock_threshold: Optional[int] = None
 
 
 class ProductRead(BaseModel):
@@ -62,6 +64,29 @@ class ImageRead(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class AdminProductRead(ProductRead):
+    """Extended product read for admin — includes inventory info."""
+    total_stock: int = 0
+    is_low_stock: bool = False
+    low_stock_threshold: int = 5
+
+
+class InventoryAlertItem(BaseModel):
+    id: int
+    name: str
+    slug: str
+    total_stock: int
+    low_stock_threshold: int
+    is_low_stock: bool
+    category_name: str = ""
+    image_url: str = ""
+
+
+class InventoryAlertsResponse(BaseModel):
+    items: list[InventoryAlertItem]
+    total: int
 
 
 class SearchResults(BaseModel):

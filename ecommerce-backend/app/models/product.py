@@ -33,6 +33,7 @@ class Product(SQLModel, table=True):
     base_price: float  # store in smallest currency unit (cents) in real production use
     is_active: bool = Field(default=True)  # soft delete flag — never hard-delete a sold product
     category_id: Optional[int] = Field(default=None, foreign_key="category.id")
+    low_stock_threshold: int = Field(default=5)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     category: Optional[Category] = Relationship(back_populates="products")

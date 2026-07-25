@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge, Button, Modal } from "@/components/ui";
-import { Plus, Eye, Edit, Trash2, Search, Loader2 } from "lucide-react";
+import { Plus, Eye, Edit, Trash2, Search, Loader2, AlertTriangle, Filter } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { api } from "@/lib/api";
 import { getProductPlaceholder } from "@/lib/placeholders";
@@ -17,6 +17,7 @@ interface ProductTableItem {
   slug: string;
   base_price: number;
   is_active: boolean;
+  low_stock_threshold?: number;
   category?: { id: number; name: string } | null;
   images?: { id: number; url: string; position: number }[];
   variants?: { id: number; stock_qty: number }[];
@@ -26,13 +27,14 @@ export function ProductTable() {
   const [products, setProducts] = useState<ProductTableItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [showLowStock, setShowLowStock] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     api.get<ProductTableItem[]>("/products/")
       .then((data) => setProducts(data))
-      .catch(() => {}) // keep empty on error
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
@@ -49,23 +51,48 @@ export function ProductTable() {
     setDeleteId(null);
   };
 
-  const filtered = products.filter((p) =>
+  const computeStock = (product: ProductTableItem) =>
+    product.variants?.reduce((sum, v) => sum + (v.stock_qty || 0), 0) ?? 0;
+
+  const isLowStock = (product: ProductTableItem) => {
+    const threshold = product.low_stock_threshold ?? 5;
+    return computeStock(product) < threshold && product.is_active;
+  };
+
+  let filtered = products.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase())
   );
+  if (showLowStock) {
+    filtered = filtered.filter(isLowStock);
+  }
 
   return (
     <div>
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-        <div className="relative flex-1 max-w-xs">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary" />
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-10 pl-10 pr-4 bg-card border border-border rounded-[var(--radius-sm)] text-text placeholder:text-text-secondary/50 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-          />
+        <div className="flex items-center gap-3 flex-1 max-w-xs w-full">
+          <div className="relative flex-1">
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-secondary" />
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full h-10 pl-10 pr-4 bg-card border border-border rounded-[var(--radius-sm)] text-text placeholder:text-text-secondary/50 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+            />
+          </div>
+          <button
+            onClick={() => setShowLowStock(!showLowStock)}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-[var(--radius-sm)] text-sm font-medium transition-colors whitespace-nowrap ${
+              showLowStock
+                ? "bg-warning/10 text-warning border border-warning/30"
+                : "bg-card text-text-secondary border border-border hover:bg-border/50"
+            }`}
+            title="Show low-stock products only"
+          >
+            <AlertTriangle size={15} />
+            <span className="hidden sm:inline">Low Stock</span>
+          </button>
         </div>
         <Link href="/admin/products/new">
           <Button size="sm">
@@ -107,8 +134,8 @@ export function ProductTable() {
                 filtered.map((product) => {
                   const imageUrl = product.images?.[0]?.url;
                   const placeholderSrc = getProductPlaceholder(product.name);
-                  const stockQty = product.variants?.[0]?.stock_qty ?? 0;
-                  const inStock = stockQty > 0;
+                  const totalStock = computeStock(product);
+                  const lowStock = isLowStock(product);
 
                   return (
                     <tr key={product.id} className="border-b border-border/50 hover:bg-border/20 transition-colors">
@@ -134,6 +161,11 @@ export function ProductTable() {
                             )}
                           </div>
                           <span className="font-medium text-text truncate max-w-[200px]">{product.name}</span>
+                          {lowStock && (
+                            <span title="Low stock" className="shrink-0">
+                              <AlertTriangle size={14} className="text-warning" />
+                            </span>
+                          )}
                         </div>
                       </td>
                       <td className="px-5 lg:px-6 py-3.5 text-text-secondary hidden sm:table-cell">
@@ -142,8 +174,15 @@ export function ProductTable() {
                       <td className="px-5 lg:px-6 py-3.5 font-medium text-text">
                         {formatPrice(product.base_price)}
                       </td>
-                      <td className="px-5 lg:px-6 py-3.5 text-text-secondary hidden md:table-cell">
-                        <span className={inStock ? "text-text" : "text-danger"}>{stockQty}</span>
+                      <td className="px-5 lg:px-6 py-3.5 hidden md:table-cell">
+                        {lowStock ? (
+                          <span className="flex items-center gap-1.5">
+                            <span className="text-warning font-medium">{totalStock}</span>
+                            <Badge variant="warning">low</Badge>
+                          </span>
+                        ) : (
+                          <span className={totalStock > 0 ? "text-text" : "text-text-secondary"}>{totalStock}</span>
+                        )}
                       </td>
                       <td className="px-5 lg:px-6 py-3.5">
                         <Badge variant={product.is_active ? "success" : "danger"}>

@@ -22,6 +22,7 @@ interface ProductFormProps {
     base_price: number;
     category_id: number | null;
     is_active: boolean;
+    low_stock_threshold?: number;
   };
 }
 
@@ -79,6 +80,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
     description: initialData?.description || "",
     base_price: initialData?.base_price ?? 0,
     category_id: initialData?.category_id ?? null,
+    low_stock_threshold: initialData?.low_stock_threshold ?? 5,
     stock: 0,
     discount: 0,
   });
@@ -329,6 +331,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
           description: form.description,
           base_price: Number(form.base_price),
           category_id: form.category_id ? Number(form.category_id) : null,
+          low_stock_threshold: form.low_stock_threshold,
         });
       } else {
         const created = await api.post<{ id: number }>("/products/", {
@@ -337,6 +340,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
           description: form.description,
           base_price: Number(form.base_price),
           category_id: form.category_id ? Number(form.category_id) : null,
+          low_stock_threshold: form.low_stock_threshold,
         });
         targetProductId = created.id;
       }
@@ -652,7 +656,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
         </div>
       )}
 
-      {/* Pricing & Stock (hidden when variants are managing stock) */}
+      {/* Pricing & Stock */}
       <div className="bg-card border border-border rounded-[var(--radius-lg)] p-6 space-y-5">
         <h3 className="font-heading font-semibold text-text">Pricing & Inventory</h3>
         <div className="grid sm:grid-cols-3 gap-5">
@@ -661,6 +665,14 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
           {variants.length === 0 && (
             <Input id="stock" label="Stock Quantity" type="number" value={form.stock} onChange={updateField("stock")} />
           )}
+          <Input
+            id="low_stock_threshold"
+            label="Low Stock Alert At"
+            type="number"
+            min="0"
+            value={form.low_stock_threshold}
+            onChange={updateField("low_stock_threshold")}
+          />
         </div>
         {variants.length > 0 && (
           <p className="text-xs text-text-secondary/60">Stock is managed per variant above.</p>
