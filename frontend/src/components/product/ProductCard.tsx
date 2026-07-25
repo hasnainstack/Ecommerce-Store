@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, ShoppingCart, Star } from "lucide-react";
-import { Button } from "@/components/ui";
 import { formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/stores/cart";
 import { getProductPlaceholder } from "@/lib/placeholders";
@@ -79,9 +78,8 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Add to Cart overlay */}
         <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-2 group-hover:translate-y-0">
-          <Button
-            size="sm"
-            className="w-full bg-white text-text hover:bg-white/90 shadow-lg text-xs h-9"
+          <button
+            className="w-full bg-white text-text hover:bg-white/90 shadow-lg text-xs h-9 rounded-[var(--radius-sm)] font-medium transition-all duration-200 inline-flex items-center justify-center"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -100,7 +98,7 @@ export function ProductCard({ product }: ProductCardProps) {
           >
             <ShoppingCart size={14} className="mr-1.5" />
             Add to Cart
-          </Button>
+          </button>
         </div>
       </Link>
 
