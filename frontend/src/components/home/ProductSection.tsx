@@ -2,33 +2,42 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { DecorativeBackground } from "@/components/ui/DecorativeBackground";
-import { ProductCard } from "@/components/product/ProductCard";
+import ProductCard, { ProductCardData } from "@/components/product/ProductCard";
 import { api } from "@/lib/api";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import { BRAND } from "@/lib/brand";
 
 interface ProductSectionProps {
   title: string;
   subtitle: string;
 }
 
+/** Convert the backend ProductRead shape to the ProductCardData the card component expects. */
+function toCardData(raw: Record<string, any>): ProductCardData {
+  return {
+    id: raw.id,
+    name: raw.name,
+    price: raw.base_price,
+    image: raw.images?.[0]?.url ?? "",
+    currency: BRAND.currency,
+  };
+}
+
 export function ProductSection({ title, subtitle }: ProductSectionProps) {
-  const [products, setProducts] = useState<Array<Record<string, any>>>([]);
+  const [products, setProducts] = useState<ProductCardData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     api.get<Array<Record<string, any>>>("/products/")
-      .then((data) => setProducts(data.slice(0, 4)))
-      .catch(() => {
-        // Keep empty on error — the ProductCard will show placeholders
-      })
+      .then((data) => setProducts(data.slice(0, 4).map(toCardData)))
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
   return (
     <section className="relative overflow-hidden py-16 lg:py-24 bg-white">
-      <DecorativeBackground variant="subtle" />
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -39,12 +48,12 @@ export function ProductSection({ title, subtitle }: ProductSectionProps) {
             <h2 className="text-3xl lg:text-4xl font-heading font-bold text-text">{title}</h2>
             <p className="text-text-secondary mt-2">{subtitle}</p>
           </div>
-          <a
+          <Link
             href="/shop"
             className="text-primary hover:text-primary-hover font-medium text-sm transition-colors whitespace-nowrap"
           >
             View All &rarr;
-          </a>
+          </Link>
         </motion.div>
 
         {loading ? (
@@ -62,7 +71,7 @@ export function ProductSection({ title, subtitle }: ProductSectionProps) {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <ProductCard product={product as any} />
+                <ProductCard product={product} />
               </motion.div>
             ))}
           </div>

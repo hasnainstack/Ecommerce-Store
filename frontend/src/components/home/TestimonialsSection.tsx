@@ -1,8 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { DecorativeBackground } from "@/components/ui/DecorativeBackground";
-import { Star, Quote, Sparkles } from "lucide-react";
+import { Star, Quote } from "lucide-react";
 
 const testimonials = [
   {
@@ -28,17 +27,15 @@ const testimonials = [
 export function TestimonialsSection() {
   return (
     <section className="relative overflow-hidden py-16 lg:py-24 bg-gradient-to-br from-primary/5 via-white to-accent/5">
-      <DecorativeBackground variant="section" />
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl lg:text-4xl font-heading font-bold text-text flex items-center justify-center gap-2">
+          <h2 className="text-3xl lg:text-4xl font-heading font-bold text-text">
             What Our Customers Say
-            <Sparkles size={24} className="text-warning" />
           </h2>
           <p className="text-text-secondary mt-3 max-w-md mx-auto">
             Real reviews from real customers
@@ -53,35 +50,24 @@ export function TestimonialsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.12 }}
-              whileHover={{ y: -5 }}
               className="bg-card border border-border rounded-[var(--radius-lg)] p-8 relative hover:shadow-hover transition-all duration-300"
             >
               <Quote size={32} className="text-primary/10 absolute top-6 right-6" />
-              {/* Rating */}
+              {/* Stars */}
               <div className="flex gap-0.5 mb-4">
                 {Array.from({ length: 5 }).map((_, j) => (
-                  <motion.div
+                  <Star
                     key={j}
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 + j * 0.05 }}
-                  >
-                    <Star
-                      size={16}
-                      className={j < t.rating ? "text-warning fill-warning" : "text-border"}
-                    />
-                  </motion.div>
+                    size={16}
+                    className={j < t.rating ? "text-warning fill-warning" : "text-border"}
+                  />
                 ))}
               </div>
               <p className="text-text-secondary text-sm leading-relaxed mb-6">&ldquo;{t.content}&rdquo;</p>
               <div className="flex items-center gap-3">
-                <motion.div
-                  whileHover={{ scale: 1.1 }}
-                  className="w-10 h-10 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center font-heading font-semibold text-sm text-text"
-                >
+                <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center font-heading font-semibold text-sm text-text">
                   {t.name.split(" ").map(n => n[0]).join("")}
-                </motion.div>
+                </div>
                 <div>
                   <p className="font-medium text-sm text-text">{t.name}</p>
                   <p className="text-xs text-text-secondary">{t.role}</p>

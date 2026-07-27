@@ -140,7 +140,7 @@ def delete_product_image(
 
 # ─── Admin product endpoints ────────────────────────────────────
 
-from sqlmodel import select as sql_select, func as sql_func
+from sqlmodel import select as sql_select
 
 
 @router.get("/admin/list", response_model=List[ProductRead])

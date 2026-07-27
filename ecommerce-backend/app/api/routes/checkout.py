@@ -66,9 +66,9 @@ def checkout(
         amount=order.total_amount,
     ))
 
-    # 6. Clear cart
-    cart_service.clear_cart(redis, user_id=current_user.id)
-
     session.commit()
+
+    # 6. Clear cart — only after DB commit succeeds
+    cart_service.clear_cart(redis, user_id=current_user.id)
 
     return CheckoutResponse(checkout_url=stripe_result["url"], order_id=order.id)

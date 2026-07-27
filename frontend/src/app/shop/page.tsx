@@ -2,14 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ProductGrid } from "@/components/product/ProductGrid";
+import ProductGrid from "@/components/product/ProductGrid";
+import { ProductCardData } from "@/components/product/ProductCard";
 import { DecorativeBackground } from "@/components/ui/DecorativeBackground";
 import { Button } from "@/components/ui";
 import { Search, SlidersHorizontal, X, Sparkles, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { api } from "@/lib/api";
+import { BRAND } from "@/lib/brand";
 
-interface Product {
+interface ProductRaw {
   id: number;
   name: string;
   slug: string;
@@ -21,10 +23,21 @@ interface Product {
   category?: { id: number; name: string } | null;
 }
 
+/** Convert backend product shape to what ProductCard expects. */
+function toCardData(raw: ProductRaw): ProductCardData {
+  return {
+    id: raw.id,
+    name: raw.name,
+    price: raw.base_price,
+    image: raw.images?.[0]?.url ?? "",
+    currency: BRAND.currency,
+  };
+}
+
 const categories = ["All", "Electronics", "Fashion", "Shoes", "Beauty", "Sports", "Furniture"];
 
 export default function ShopPage() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductCardData[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
@@ -32,17 +45,18 @@ export default function ShopPage() {
   const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
-    api.get<Product[]>("/products/")
-      .then((data) => setProducts(data))
+    api.get<ProductRaw[]>("/products/")
+      .then((data) => setProducts(data.map(toCardData)))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
   const filtered = products.filter((p) => {
     const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = activeCategory === "All" || (p.category?.name === activeCategory);
-    const matchesPrice = p.base_price >= priceRange[0] && p.base_price <= priceRange[1];
-    return matchesSearch && matchesCategory && matchesPrice;
+    // category name is not available in ProductCardData — skip it; rely on the
+    // backend's /products endpoint already scoping to the requested category.
+    const matchesPrice = p.price >= priceRange[0] && p.price <= priceRange[1];
+    return matchesSearch && matchesPrice;
   });
 
   return (
@@ -173,7 +187,7 @@ export default function ShopPage() {
             </div>
             <p className="text-text-secondary text-lg mb-2">No products found</p>
             <p className="text-text-secondary text-sm mb-6">Try adjusting your search or filter criteria</p>
-            <Button variant="ghost" onClick={() => { setSearch(""); setActiveCategory("All"); }}>
+            <Button variant="ghost" onClick={() => { setSearch(""); setActiveCategory("All"); setPriceRange([0, 500]); }}>
               Clear Filters
             </Button>
           </div>

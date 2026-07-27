@@ -1,70 +1,82 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { DecorativeBackground } from "@/components/ui/DecorativeBackground";
-import { Smartphone, Shirt, Footprints, Eye, Dumbbell, Armchair } from "lucide-react";
 import Image from "next/image";
+import { BRAND } from "@/lib/brand";
 
-const categories = [
-  { name: "Electronics", icon: Smartphone, count: "1,234 items", color: "from-blue-500/20 to-blue-600/10", img: "/images/categories/electronics.png" },
-  { name: "Fashion", icon: Shirt, count: "856 items", color: "from-pink-500/20 to-pink-600/10", img: "/images/categories/fashion.png" },
-  { name: "Shoes", icon: Footprints, count: "567 items", color: "from-amber-500/20 to-amber-600/10", img: "/images/categories/shoes.png" },
-  { name: "Beauty", icon: Eye, count: "432 items", color: "from-rose-500/20 to-rose-600/10", img: "/images/categories/beauty.png" },
-  { name: "Sports", icon: Dumbbell, count: "321 items", color: "from-green-500/20 to-green-600/10", img: "/images/categories/sports.png" },
-  { name: "Furniture", icon: Armchair, count: "198 items", color: "from-purple-500/20 to-purple-600/10", img: "/images/categories/furniture.png" },
+export interface FeaturedCard {
+  id: string | number;
+  name: string;
+  price: number;
+  description: string;
+  image: string;
+  gradientFrom: string;
+  gradientTo: string;
+  currency?: string;
+}
+
+const DEFAULT_CARDS: FeaturedCard[] = [
+  {
+    id: "featured-1",
+    name: "Zoom Structure 18",
+    price: 10000,
+    description: "A lightweight trainer built specifically for runners, with a breathable textile upper.",
+    image: "/products/featured-1.png",
+    gradientFrom: BRAND.colors.cardGradients[0].from,
+    gradientTo: BRAND.colors.cardGradients[0].to,
+  },
+  {
+    id: "featured-2",
+    name: "Retro 7",
+    price: 15000,
+    description: "A fully reworked classic silhouette, ready to release for the new season.",
+    image: "/products/featured-2.png",
+    gradientFrom: BRAND.colors.cardGradients[1].from,
+    gradientTo: BRAND.colors.cardGradients[1].to,
+  },
+  {
+    id: "featured-3",
+    name: "Air Max Dusty",
+    price: 20000,
+    description: "A cactus-green colorway with a silhouette that pairs well with this season's palette.",
+    image: "/products/featured-3.png",
+    gradientFrom: BRAND.colors.cardGradients[2].from,
+    gradientTo: BRAND.colors.cardGradients[2].to,
+  },
 ];
 
-export function CategoriesSection() {
+export default function CategoriesSection({ cards = DEFAULT_CARDS }: { cards?: FeaturedCard[] }) {
   return (
-    <section className="relative overflow-hidden py-16 lg:py-24">
-      <DecorativeBackground variant="section" />
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-3xl lg:text-4xl font-heading font-bold text-text">
-            Shop by Category
-          </h2>
-          <p className="text-text-secondary mt-3 max-w-md mx-auto">
-            Browse through our curated categories and find exactly what you need
-          </p>
-        </motion.div>
+    <section className="mx-auto max-w-7xl px-6 py-16">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        {cards.map((card, i) => (
+          <div
+            key={card.id}
+            className="group relative flex flex-col overflow-hidden rounded-2xl p-6 text-white shadow-xl transition hover:-translate-y-1"
+            style={{
+              background: `linear-gradient(160deg, ${card.gradientFrom}, ${card.gradientTo})`,
+              // stagger the middle/last cards upward, matching the mockup's offset stack
+              marginTop: i === 1 ? "1.5rem" : i === 2 ? "3rem" : 0,
+            }}
+          >
+            <span className="text-xs font-black italic tracking-tight opacity-80">{BRAND.name}</span>
+            <p className="mt-3 text-lg font-bold">{card.price.toLocaleString()}</p>
+            <h3 className="mt-1 text-xl font-extrabold">{card.name}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-white/85">{card.description}</p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-6">
-          {categories.map((cat, i) => (
-            <motion.button
-              key={cat.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              whileHover={{ y: -8 }}
-              className="group bg-card border border-border rounded-[var(--radius-lg)] p-6 text-center transition-all duration-300 hover:shadow-hover overflow-hidden relative"
-            >
-              {/* Hover image reveal */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Image
-                  src={cat.img}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 50vw, 16vw"
-                />
-                <div className="absolute inset-0 bg-card/80 backdrop-blur-[2px]" />
-              </div>
-              <div className="relative z-10">
-                <div className={`w-16 h-16 mx-auto bg-gradient-to-br ${cat.color} rounded-[var(--radius-sm)] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  <cat.icon size={28} className="text-text" />
-                </div>
-                <h3 className="font-heading font-semibold text-text">{cat.name}</h3>
-                <p className="text-xs text-text-secondary mt-1">{cat.count}</p>
-              </div>
-            </motion.button>
-          ))}
-        </div>
+            <div className="relative mt-6 aspect-[4/3] w-full">
+              <Image
+                src={card.image}
+                alt={card.name}
+                fill
+                className="object-contain drop-shadow-xl transition group-hover:scale-105"
+              />
+            </div>
+
+            <button className="mt-4 self-start rounded-full bg-white/90 px-6 py-2 text-xs font-bold uppercase tracking-wide text-slate-900 transition hover:bg-white">
+              Buy
+            </button>
+          </div>
+        ))}
       </div>
     </section>
   );

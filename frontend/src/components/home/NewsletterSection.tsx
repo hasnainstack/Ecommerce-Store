@@ -1,12 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui";
 import { Send, Mail } from "lucide-react";
 
 export function NewsletterSection() {
   return (
-    <section className="py-16 lg:py-24">
+    <section className="py-16 lg:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -36,7 +35,7 @@ export function NewsletterSection() {
                 placeholder="Enter your email"
                 className="flex-1 h-12 px-5 bg-white/10 border border-white/20 rounded-[var(--radius-sm)] text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 backdrop-blur-sm"
               />
-              <button className="inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed bg-white text-primary hover:bg-white/90 shrink-0 h-13 px-8 text-lg rounded-[var(--radius-sm)]">
+              <button className="inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed bg-white text-primary hover:bg-white/90 shrink-0 h-12 px-8 rounded-[var(--radius-sm)]">
                 Subscribe
                 <Send size={16} className="ml-2" />
               </button>

@@ -135,10 +135,10 @@ def update_order_status_legacy(
         changed_by=current_user.email,
         reason=data.reason,
     )
+    if not order:
+        raise HTTPException(status_code=404, detail=err or "Order not found")
     if err:
         raise HTTPException(status_code=400, detail=err)
-    if not order:
-        raise HTTPException(status_code=404, detail="Order not found")
     return order
 
 
@@ -185,6 +185,7 @@ def update_order_details(
     data: OrderUpdate,
     current_user: User = Depends(require_admin),
     session: Session = Depends(get_session),
+    request: Request = None,
 ):
     """Update tracking info and admin notes for an order."""
     order = session.get(Order, order_id)

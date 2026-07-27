@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { Toast } from "@/components/ui";
 import { AuthGuard } from "@/components/layout/AuthGuard";
 
 export const metadata: Metadata = {
-  title: "Store — Premium E-Commerce",
+  title: "STORES — Premium E-Commerce",
   description: "Your premium online shopping destination. Quality products, fast delivery.",
 };
 

@@ -80,7 +80,7 @@ class OrderStatusUpdate(BaseModel):
 
 class OrderStatusUpdateResponse(BaseModel):
     order: OrderRead
-    history: OrderStatusHistoryRead
+    history: Optional[OrderStatusHistoryRead] = None
 
 
 class AdminOrderListResponse(BaseModel):

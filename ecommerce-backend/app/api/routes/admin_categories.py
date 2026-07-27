@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
+from sqlalchemy.exc import IntegrityError
 from app.core.database import get_session
 from app.api.deps import require_admin
 from app.models.product import Category, CategoryAttribute
@@ -84,8 +85,15 @@ def delete_category(
     cat = session.get(Category, cat_id)
     if not cat:
         raise HTTPException(status_code=404, detail="Category not found")
-    session.delete(cat)
-    session.commit()
+    try:
+        session.delete(cat)
+        session.commit()
+    except IntegrityError:
+        session.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot delete category: it still has products assigned. Remove or reassign them first.",
+        )
 
 
 # ── Attribute Mapping ───────────────────────────────────

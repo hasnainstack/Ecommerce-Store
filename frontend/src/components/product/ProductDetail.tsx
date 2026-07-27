@@ -3,9 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Button, Badge } from "@/components/ui";
-import { Heart, ShoppingCart, Minus, Plus, Star, Truck, Shield, RefreshCw } from "lucide-react";
+import { Heart, ShoppingCart, Minus, Plus, Star, Truck, Shield, RefreshCw, ImageOff } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
-import { getProductPlaceholder } from "@/lib/placeholders";
 import { useCartStore } from "@/stores/cart";
 import { useRouter } from "next/navigation";
 
@@ -89,14 +88,8 @@ export function ProductDetail({ product }: ProductDetailProps) {
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
             ) : (
-              <div className="w-full h-full relative p-12">
-                <Image
-                  src={getProductPlaceholder(product.name)}
-                  alt={product.name}
-                  fill
-                  className="object-contain p-12"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
+              <div className="w-full h-full flex items-center justify-center">
+                <ImageOff size={48} className="text-border/30" />
               </div>
             )}
           </div>
@@ -113,14 +106,8 @@ export function ProductDetail({ product }: ProductDetailProps) {
                   {img.url ? (
                     <Image src={resolveImageUrl(img.url)!} alt="" fill className="object-cover" sizes="80px" />
                   ) : (
-                    <div className="w-full h-full bg-border/30 relative p-2">
-                      <Image
-                        src={getProductPlaceholder(product.name)}
-                        alt=""
-                        fill
-                        className="object-contain p-2"
-                        sizes="80px"
-                      />
+                    <div className="w-full h-full flex items-center justify-center bg-border/20">
+                      <ImageOff size={16} className="text-border/40" />
                     </div>
                   )}
                 </button>
